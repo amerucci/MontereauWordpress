@@ -16,6 +16,17 @@ register_sidebar( array(
  'before_title' => '<h2 class="mettez-ce-que-vous-voulez">',
  'after_title' => '</h2>',
  ) );
+
+ register_sidebar( array(
+
+    'name' => 'Ma super zone',
+    'id' => 'nouvelle-zone',
+    'before_widget' => '<div class="mettez-ce-que-vous-voulez">',
+    'after_widget' => '</div>',
+    'before_title' => '<h2 class="mettez-ce-que-vous-voulez">',
+    'after_title' => '</h2>',
+    ) );
+    
  
  
 register_sidebar( array(
