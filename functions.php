@@ -1,52 +1,90 @@
-<?php 
+<?php
 
-// on créé une zone pour le menu 
-register_nav_menu( 'menuheader', 'Menu du Header' );
-register_nav_menu( 'menufooter', 'Menu du Footer' );
+//On déclare la zone que l'on souhaite créer
+function widgets(){
+    register_sidebar(
+        array(
+            //On donne un nom à la zone de notre widget qui apparaîtra dans votre administration Wordpress
+            'name' => 'Horaires',
+            //Identifiant unique de votre zone qui vous permettra par la suite de l'appeler en front
+            'id' => 'horaires',
+            //On ajoute une description à notre zone
+            'description' => 'Ajouter un widget de type texte dans lequel vous saisirez vos horaires dans cette zone',
+            //On choisi la balise HTML qui va entourer notre widget
+            'before_widget' => '<div id="horaires" class="widget">',
+            'after_widget' => '</div>',
+            //On choisi la balise HTML qui va entourer le titre de notre widget
+            'before_title' => '<p class="titreduwidget">',
+            'after_title' => '</p>'
+    )
+        );   
+}
+//On lance l'action avec le hook widget_init pour qu'il puisse exécuter notre fonction et ajouter notre zone aux widgets
+add_action('widgets_init', 'widgets');
 
+//Appel de la zone en front
+//dynamic_sidebar('[id_saisie]'); 
 
-function header_widgets_init() {
- 
-register_sidebar( array(
+function mesMenusWordpress()
+{
+    register_nav_menus(
+        array(
+            'header-menu' => __('Zone menu header'),
+            'footer-menu' => __('Menu à afficher dans le footer')
+        )
+        );
+}
 
- 'name' => 'Ma zone que je viens de créer',
- 'id' => 'nouvelle-zone',
- 'before_widget' => '<div class="mettez-ce-que-vous-voulez">',
- 'after_widget' => '</div>',
- 'before_title' => '<h2 class="mettez-ce-que-vous-voulez">',
- 'after_title' => '</h2>',
- ) );
+add_action('init', 'mesMenusWordpress');
 
- register_sidebar( array(
+/*
+* On utilise une fonction pour créer notre custom post type 'Séries TV'
+*/
 
-    'name' => 'Ma super zone',
-    'id' => 'nouvelle-zone',
-    'before_widget' => '<div class="mettez-ce-que-vous-voulez">',
-    'after_widget' => '</div>',
-    'before_title' => '<h2 class="mettez-ce-que-vous-voulez">',
-    'after_title' => '</h2>',
-    ) );
-    
- 
- 
-register_sidebar( array(
+function wpm_custom_post_type() {
 
- 'name' => 'Ma zone que je viens de créer 2',
- 'id' => 'nouvelle-zone-2',
- 'before_widget' => '<div class="mettez-ce-que-vous-voulez">',
- 'after_widget' => '</div>',
- 'before_title' => '<h2 class="mettez-ce-que-vous-voulez">',
- 'after_title' => '</h2>',
- ) );
- 
- }
+	// On rentre les différentes dénominations de notre custom post type qui seront affichées dans l'administration
+	$labels = array(
+		// Le nom au pluriel
+		'name'                => _x( 'Portfolio', 'Post Type General Name'),
+		// Le nom au singulier
+		'singular_name'       => _x( 'Série TV', 'Post Type Singular Name'),
+		// Le libellé affiché dans le menu
+		'menu_name'           => __( 'Portfolio'),
+		// Les différents libellés de l'administration
+		'all_items'           => __( 'Toutes les séries TV'),
+		'view_item'           => __( 'Voir les séries TV'),
+		'add_new_item'        => __( 'Ajouter une nouvelle série TV'),
+		'add_new'             => __( 'Ajouter'),
+		'edit_item'           => __( 'Editer la séries TV'),
+		'update_item'         => __( 'Modifier la séries TV'),
+		'search_items'        => __( 'Rechercher une série TV'),
+		'not_found'           => __( 'Non trouvée'),
+		'not_found_in_trash'  => __( 'Non trouvée dans la corbeille'),
+	);
+	
+	// On peut définir ici d'autres options pour notre custom post type
+	
+	$args = array(
+		'label'               => __( 'Séries TV'),
+		'description'         => __( 'Tous sur séries TV'),
+		'labels'              => $labels,
+		// On définit les options disponibles dans l'éditeur de notre custom post type ( un titre, un auteur...)
+		'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+		/* 
+		* Différentes options supplémentaires
+		*/
+		'show_in_rest' => true,
+		'hierarchical'        => false,
+		'public'              => true,
+		'has_archive'         => true,
+		'rewrite'			  => array( 'slug' => 'series-tv'),
 
-add_action( 'widgets_init', 'header_widgets_init' );
+	);
+	
+	// On enregistre notre custom post type qu'on nomme ici "serietv" et ses arguments
+	register_post_type( 'seriestv', $args );
 
+}
 
-//‘name’ = nom de la “widget area” qui apparaîtra dans votre administration WordPress
-//‘id’ = identifiant unique de votre “widget area”
-//‘before_widget’ = choisir une balise HTML à ouvrir avant votre widget (<div>, <li> etc…) et profitez-en pour y ajouter une classe qui pourra vous aider lors de la customisation CSS (étape 5)
-//‘after_widget’ = fermer la balise (</div>, </li> etc…)
-//‘before_title’ = choisir une balise pour le titre du widget (<h2>, <h3>, <h4> etc…) et, comme pour le ‘before_widget’, ajoutez une classe pour agir en CSS ultérieurement
-//‘after_title’ = fermer la balise du titre (</h2>, </h3>, </h4> etc…)
+add_action( 'init', 'wpm_custom_post_type', 0 );
