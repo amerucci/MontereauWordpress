@@ -1,5 +1,13 @@
 <?php get_header(); ?>
 <div class="main single">
+
+<div class="container">
+
+
+
+
+
+
 <?php if (have_posts()) : ?>
 <?php while (have_posts()) : the_post(); ?>
 <div class="post">
@@ -17,5 +25,6 @@ Posté le <?php the_date(); ?> dans <?php the_category(', '); ?> par <?php the_a
 <?php endwhile; ?>
 <?php endif; ?>
 </div>
-<?php get_sidebar(); ?>
+</div>
+
 <?php get_footer(); ?>c
